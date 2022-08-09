@@ -16,6 +16,8 @@ public class SwiftFlutterTiktokSdkPlugin: NSObject, FlutterPlugin {
       result(nil)
     case "login":
       login(call, result: result)
+    case "share":
+      login(call, result: result)
     default:
       result(FlutterMethodNotImplemented)
       return
@@ -68,6 +70,43 @@ public class SwiftFlutterTiktokSdkPlugin: NSObject, FlutterPlugin {
       }
     })
   }
+
+  func share(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+    // guard let args = call.arguments as? [String: Any] else {
+    //   result(FlutterError.nilArgument)
+    //   return
+    // }
+    
+    // guard let scope = args["image"] as? String else {
+    //   result(FlutterError.failedArgumentField("image", type: String.self))
+    //   return
+    // }
+    
+    guard let rootViewController = UIApplication.shared.keyWindow?.rootViewController else {
+      result(nil)
+      return
+    }
+    
+    let request = TikTokOpenSDKShareRequest()
+    request.mediaType = TikTokOpenSDKShareMediaTypeImage;
+    let photoUrl = call.arguments as! String
+    var mediaLocalIdentifiers: [String] = []
+    mediaLocalIdentifiers.append(photoUrl)
+    request.localIdentifiers = mediaLocalIdentifiers
+    DispatchQueue.main.async {
+      request.send(completionBlock: { response in
+        print("Response from TikTok")
+        if resp.isSucceed {
+        result("success")
+      } else {
+        result(FlutterError(
+          code: String(resp.errCode.rawValue),
+          message: resp.errString,
+          details: nil
+        ))
+      }
+      })
+    }
 }
 
 extension FlutterError {

@@ -77,4 +77,20 @@ class TikTokSDK {
       );
     }
   }
+
+  /// Share TikTok
+  ///
+  Future<void> share({
+    String? imagePath,
+  }) async {
+    try {
+      final result = await _channel.invokeMapMethod(
+        'share',
+        arguments: imagePath
+      );
+    } on PlatformException catch (e) {
+      print(e);
+    }
+  }
+
 }
